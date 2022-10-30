@@ -9,15 +9,15 @@ jobs:
       - name: MLops
         env:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-        - name: installing python 
-          run: | 
+      - name: installing python 
+        run: | 
           sudo apt install python3.8
           python --version 
-        - name: training model
-          run: |
+      - name: training model
+        run: |
           pip install -r requirements.txt
           python train.py
-        - name: echo metrices
-          run: |
+      - name: echo metrices
+        run: |
           echo Model metrics
           cat metrics.txt 
