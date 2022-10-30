@@ -11,6 +11,8 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
         run: |
 
+          python --version 
+
           pip install -r requirements.txt
           python train.py
           
