@@ -2,7 +2,7 @@ name: MLops
 on: [push]
 jobs:
   run:
-    runs-on: [ubuntu-latest]
+    runs-on: [self-hosted,cirun.gpu]
     container: docker://dvcorg/cml-py3:latest
     steps:
       - uses: actions/checkout@v2
