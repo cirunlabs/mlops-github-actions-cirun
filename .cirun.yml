@@ -6,4 +6,4 @@ runners:
     machine_image: ami-00ac0c28c01352e53
     workflow: .github/workflows/MLops.yaml
     labels:
-      - cirun.gpu
+      - gpu
