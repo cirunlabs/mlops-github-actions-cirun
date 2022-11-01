@@ -4,6 +4,6 @@ runners:
     instance_type: g4dn.xlarge
     region: eu-west-1
     machine_image: ami-0bddab4f878f34289
-    workflow: .github/workflows/MLops.yaml
+    workflow: .github/workflows/MLops.yml
     labels:
       - gpu
