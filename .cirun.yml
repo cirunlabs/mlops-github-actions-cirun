@@ -2,7 +2,7 @@ runners:
   - name: gpu-runner
     cloud: aws
     instance_type: g4ad.xlarge
-    region: eu-west-2
+    region: eu-west-1
     machine_image: ami-0bddab4f878f34289
     workflow: .github/workflows/MLops.yaml
     labels:
