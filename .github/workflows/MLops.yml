@@ -5,7 +5,7 @@ on:
   workflow_dispatch: 
 jobs:
   run:
-    runs-on: [self-hosted,cirun.gpu]
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
       - name: Run a one-line script
