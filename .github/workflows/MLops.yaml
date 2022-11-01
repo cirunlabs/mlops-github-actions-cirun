@@ -3,7 +3,6 @@ on: [push]
 jobs:
   run:
     runs-on: [self-hosted,cirun.gpu]
-    container: docker://dvcorg/cml-py3:latest
     steps:
       - uses: actions/checkout@v2
       - name: Run a one-line script
@@ -14,14 +13,5 @@ jobs:
         run: |
           echo Running nvidia-smi
           nvidia-smi
-      - name: MLops
-        env:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Your ML workflow goes here
-          pip install -r requirements.txt
-          python train.py
-          
-          echo Model metrics
-          cat metrics.txt
+     
           
