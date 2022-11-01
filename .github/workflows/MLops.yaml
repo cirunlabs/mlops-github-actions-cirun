@@ -3,8 +3,17 @@ on: [push]
 jobs:
   run:
     runs-on: [self-hosted,cirun.gpu]
+    container: docker://dvcorg/cml-py3:latest
     steps:
       - uses: actions/checkout@v2
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      # Runs a set of commands using the runners shell
+      - name: Run NVIDIA-SMI
+        run: |
+          echo Running nvidia-smi
+          nvidia-smi
       - name: MLops
         env:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
