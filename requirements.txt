@@ -1,5 +1,4 @@
-pandas
-sklearn
-matplotlib
-seaborn
-numpy
+opencv-python
+tensorflow.compat.v2
+tensorflow_hub
+IPython
