@@ -1,4 +1,7 @@
-opencv-python
-tensorflow.compat.v2
-tensorflow_hub
-IPython
+gym
+torch
+torch.nn
+torch.optim
+torch.nn.functional
+torch.autograd
+torchvision.transforms
