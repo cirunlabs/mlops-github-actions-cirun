@@ -70,7 +70,7 @@ class DQN(nn.Module):
         x = F.relu(self.bn3(self.conv3(x)))
         return self.head(x.view(x.size(0), -1))
 resize = T.Compose([T.ToPILImage(),
-                    T.Scale(40, interpolation=Image.CUBIC),
+                    T.Resize(40, interpolation=Image.CUBIC),
                     T.ToTensor()])
 
 # This width is based on the code from gym.
