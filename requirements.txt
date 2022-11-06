@@ -2,6 +2,4 @@
 gym
 torch
 torch_optimizer
-
-torch.autograd
 torchvision.transforms
