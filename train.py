@@ -16,20 +16,20 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 import torchvision.transforms as T
 
+
 # set up matplotlib
 is_ipython = 'inline' in matplotlib.get_backend()
 if is_ipython:
     from IPython import display
 
 plt.ion()
-env = gym.make('CartPole-v1').unwrapped
+env = gym.make('CartPole-v1', mode='rgb_array').unwrapped
 use_cuda = torch.cuda.is_available()
 FloatTensor = torch.cuda.FloatTensor if use_cuda else torch.FloatTensor
 LongTensor = torch.cuda.LongTensor if use_cuda else torch.LongTensor
 ByteTensor = torch.cuda.ByteTensor if use_cuda else torch.ByteTensor
 Tensor = FloatTensor
-Transition = namedtuple('Transition',
-                        ('state', 'action', 'next_state', 'reward'))
+Transition = namedtuple('Transition',('state', 'action', 'next_state', 'reward'))
 
 
 class ReplayMemory(object):
@@ -84,19 +84,14 @@ def get_cart_location():
 
 
 def get_screen():
-    screen = env.render(mode='rgb_array').transpose(
-        (2, 0, 1))  # transpose into torch order (CHW)
+    screen = env.render(mode='rgb_array').transpose((2, 0, 1))  # transpose into torch order (CHW)
     # Strip off the top and bottom of the screen
     screen = screen[:, 160:320]
     view_width = 320
     cart_location = get_cart_location()
-    if cart_location < view_width // 2:
-        slice_range = slice(view_width)
-    elif cart_location > (screen_width - view_width // 2):
-        slice_range = slice(-view_width, None)
-    else:
-        slice_range = slice(cart_location - view_width // 2,
-                            cart_location + view_width // 2)
+    if cart_location < view_width // 2: slice_range = slice(view_width)
+    elif cart_location > (screen_width - view_width // 2):slice_range = slice(-view_width, None)
+    else:slice_range = slice(cart_location - view_width // 2,cart_location + view_width // 2)
     # Strip off the edges, so that we have a square image centered on a cart
     screen = screen[:, :, slice_range]
     # Convert to float, rescare, convert to torch tensor
@@ -108,8 +103,7 @@ def get_screen():
 
 env.reset()
 plt.figure()
-plt.imshow(get_screen().cpu().squeeze(0).permute(1, 2, 0).numpy(),
-           interpolation='none')
+plt.imshow(get_screen().cpu().squeeze(0).permute(1, 2, 0).numpy(),interpolation='none')
 plt.title('Example extracted screen')
 plt.show()
 BATCH_SIZE = 128
@@ -151,15 +145,12 @@ def optimize_model():
     batch = Transition(*zip(*transitions))
 
     # Compute a mask of non-final states and concatenate the batch elements
-    non_final_mask = ByteTensor(tuple(map(lambda s: s is not None,
-                                          batch.next_state)))
+    non_final_mask = ByteTensor(tuple(map(lambda s: s is not None, batch.next_state)))
 
     # We don't want to backprop through the expected action values and volatile
     # will save us on temporarily changing the model parameters'
     # requires_grad to False!
-    non_final_next_states = Variable(torch.cat([s for s in batch.next_state
-                                                if s is not None]),
-                                     volatile=True)
+    non_final_next_states = Variable(torch.cat([s for s in batch.next_state if s is not None]),volatile=True)
     
     state_batch = Variable(torch.cat(batch.state))
     action_batch = Variable(torch.cat(batch.action))
