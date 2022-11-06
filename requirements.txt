@@ -1,5 +1,4 @@
-
-gym
+gym[all]
 torch
 matplotlib
 torch_optimizer
