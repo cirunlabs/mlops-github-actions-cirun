@@ -1,7 +1,7 @@
+
 gym
 torch
-torch.nn
-torch.optim
-torch.nn.functional
+torch_optimizer
+
 torch.autograd
 torchvision.transforms
