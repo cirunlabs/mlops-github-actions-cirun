@@ -22,7 +22,7 @@ if is_ipython:
     from IPython import display
 
 plt.ion()
-env = gym.make('CartPole-v0').unwrapped
+env = gym.make('CartPole-v1').unwrapped
 use_cuda = torch.cuda.is_available()
 FloatTensor = torch.cuda.FloatTensor if use_cuda else torch.FloatTensor
 LongTensor = torch.cuda.LongTensor if use_cuda else torch.LongTensor
