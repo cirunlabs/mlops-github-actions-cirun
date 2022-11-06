@@ -1,5 +1,6 @@
 
 gym
 torch
+matplotlib
 torch_optimizer
 torchvision
