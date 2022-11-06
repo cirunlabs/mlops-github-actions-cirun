@@ -23,7 +23,7 @@ if is_ipython:
     from IPython import display
 
 plt.ion()
-env = gym.envs.make('CartPole-v1').unwrapped
+env = gym.envs.make('CartPole-v0').unwrapped
 use_cuda = torch.cuda.is_available()
 FloatTensor = torch.cuda.FloatTensor if use_cuda else torch.FloatTensor
 LongTensor = torch.cuda.LongTensor if use_cuda else torch.LongTensor
@@ -84,14 +84,19 @@ def get_cart_location():
 
 
 def get_screen():
-    screen = env.render(mode='rgb_array').transpose((2, 0, 1))  # transpose into torch order (CHW)
-    # Strip off the top and bottom of the screen
+    # screen = env.render(mode='rgb_array').transpose(
+    #     (2, 0, 1))  # transpose into torch order (CHW)
+    # # Strip off the top and bottom of the screen
     screen = screen[:, 160:320]
     view_width = 320
     cart_location = get_cart_location()
-    if cart_location < view_width // 2: slice_range = slice(view_width)
-    elif cart_location > (screen_width - view_width // 2):slice_range = slice(-view_width, None)
-    else:slice_range = slice(cart_location - view_width // 2,cart_location + view_width // 2)
+    if cart_location < view_width // 2:
+        slice_range = slice(view_width)
+    elif cart_location > (screen_width - view_width // 2):
+        slice_range = slice(-view_width, None)
+    else:
+        slice_range = slice(cart_location - view_width // 2,
+                            cart_location + view_width // 2)
     # Strip off the edges, so that we have a square image centered on a cart
     screen = screen[:, :, slice_range]
     # Convert to float, rescare, convert to torch tensor
@@ -101,11 +106,14 @@ def get_screen():
     # Resize, and add a batch dimension (BCHW)
     return resize(screen).unsqueeze(0).type(Tensor)
 
+
 env.reset()
 plt.figure()
-plt.imshow(get_screen().cpu().squeeze(0).permute(1, 2, 0).numpy(),interpolation='none')
+plt.imshow(get_screen().cpu().squeeze(0).permute(1, 2, 0).numpy(),
+           interpolation='none')
 plt.title('Example extracted screen')
 plt.show()
+
 BATCH_SIZE = 128
 GAMMA = 0.999
 EPS_START = 0.9
