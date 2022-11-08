@@ -6,9 +6,6 @@ jobs:
     container: docker://dvcorg/cml-py3:latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v4
-        with:
-         python-version: '3.9.14'
       - name: MLops
         env:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
