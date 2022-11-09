@@ -1,7 +1,7 @@
 name: MLops
 on: 
   push:
-    branches: [ "new" ]
+    branches: [ "new-example-2" ]
   workflow_dispatch: 
 jobs:
   run:
