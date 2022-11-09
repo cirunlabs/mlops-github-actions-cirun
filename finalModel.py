@@ -37,9 +37,9 @@ model = Model(inputs=mobile.inputs, outputs=output)
 for layer in model.layers[:-23]:
     layer.trainable = False
 
-model.compile(optimizer=Adam(lr=0.01), loss='categorical_crossentropy', metrics=['accuracy'])
+model.compile(optimizer=Adam(learning_rate=0.01), loss='categorical_crossentropy', metrics=['accuracy'])
 
-model1.summary()
+model.summary()
 
 model.fit(x=train_batches, validation_data=valid_batches, epochs=30, verbose=2)
 
