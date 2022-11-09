@@ -1,0 +1,26 @@
+name: MLops
+on: 
+  push:
+    branches: [ "new" ]
+  workflow_dispatch: 
+jobs:
+  run:
+    runs-on: self-hosted
+    container: docker://dvcorg/cml-py3:latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get Free Memory
+        run: free -h
+      - name: Get GPU list
+        run: nvidia-smi --list-gpus
+      - name: Get GPU 
+        run: nvidia-smi --id=0 --loop=5 --query --display=UTILIZATION
+      - name: Dependency Install
+        run: pip install -r requirements.txt
+      - name: MLops
+        env:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          
+          # Your ML workflow goes here
+          python finalModel.py

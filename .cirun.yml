@@ -1,0 +1,9 @@
+runners:
+  - name: gpu-runner
+    cloud: aws
+    instance_type: g4dn.xlarge
+    region: eu-west-1
+    machine_image: ami-04f0b6eb4c6b5e572
+    workflow: .github/workflows/MLops.yml
+    labels:
+      - gpu
