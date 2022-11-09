@@ -5,7 +5,6 @@ import random as rd
 
 #data visualization
 import matplotlib.pyplot as plt
-%matplotlib inline
 import seaborn as sns
 import plotly.express as px
 from PIL import Image
