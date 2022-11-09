@@ -15,9 +15,9 @@ import shutil
 import random
 import matplotlib.pyplot as plt
 
-train_path = './data/signs'
-test_path = './data/signs'
-valid_path = './data/signs'
+train_path = './data/signs/train.csv'
+test_path = './data/signs/test.csv'
+valid_path = './data/signs/train.csv'
 
 train_batches = ImageDataGenerator(preprocessing_function=tf.keras.applications.mobilenet.preprocess_input).flow_from_directory(
     directory=train_path, target_size=(224,224), batch_size=10)
