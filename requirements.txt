@@ -1,7 +1,8 @@
-
 Tensorflow
 pandas
 numpy
 sklearn
 plotly
 scikit-learn
+ipywidgets
+pytest-warnings
