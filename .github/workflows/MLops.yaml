@@ -13,6 +13,6 @@ jobs:
           
           # Your ML workflow goes here
           pip install -r requirements.txt
-          cd ./python
+          
           python train.py
           
