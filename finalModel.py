@@ -1,92 +1,178 @@
-import numpy as np
+#importing libraries
+import numpy as np 
+import pandas as pd
+import random as rd
+
+#data visualization
+import matplotlib.pyplot as plt
+%matplotlib inline
+import seaborn as sns
+import plotly.express as px
+from PIL import Image
+
+#for the CNN model
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
 import tensorflow as tf
 from tensorflow import keras
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.layers import Activation, Dense, Flatten, BatchNormalization, Conv2D, MaxPool2D
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.models import Model, Sequential
-from tensorflow.keras.applications import imagenet_utils
-from tensorflow.keras.metrics import categorical_crossentropy
-from sklearn.metrics import confusion_matrix
-import itertools
-import os
-import shutil
-import random
-import matplotlib.pyplot as plt
+from tensorflow.keras import layers
+from tensorflow.keras.layers.experimental import preprocessing
+from keras.preprocessing.image import ImageDataGenerator
 
-train_path = './data/signs/train.csv'
-test_path = './data/signs/test.csv'
-valid_path = './data/signs/train.csv'
+#setting seed for reproducability
+from numpy.random import seed
+seed(10)
+tf.random.set_seed(20)
 
-train_batches = ImageDataGenerator(preprocessing_function=tf.keras.applications.mobilenet.preprocess_input).flow_from_directory(
-    directory=train_path, target_size=(224,224), batch_size=10)
-valid_batches = ImageDataGenerator(preprocessing_function=tf.keras.applications.mobilenet.preprocess_input).flow_from_directory(
-    directory=valid_path, target_size=(224,224), batch_size=10)
-test_batches = ImageDataGenerator(preprocessing_function=tf.keras.applications.mobilenet.preprocess_input).flow_from_directory(
-    directory=test_path, target_size=(224,224), batch_size=10, shuffle=False)
 
-mobile = tf.keras.applications.mobilenet.MobileNet()
 
-x = mobile.layers[-6].output
+#downloading the training data
+train = pd.read_csv("./sign-mnist-train/sign_mnist_train.csv")
+train.head()
 
-output = Dense(units=36, activation='softmax')(x)
+test = pd.read_csv("./sign-mnist-test/sign_mnist_test.csv")
+test.head()
+#summing the number of na in the training set for each column
+print(sum(train.isna().sum()))
 
-model = Model(inputs=mobile.inputs, outputs=output)
+#summing the number of na in the test set for each column
+print(sum(test.isna().sum()))
 
-for layer in model.layers[:-23]:
-    layer.trainable = False
+#creating our Y for the training data
+Y_train = train["label"]
 
-model.compile(optimizer=Adam(learning_rate=0.01), loss='categorical_crossentropy', metrics=['accuracy'])
+#creating our X for the training data
+X_train = train.drop(labels = ["label"],axis = 1) 
 
-model.summary()
+#creating our Y for the test data
+Y_test = test["label"]
 
-model.fit(x=train_batches, validation_data=valid_batches, epochs=30, verbose=2)
+#creating our X for the training data
+X_test = test.drop(labels = ["label"],axis = 1) 
 
-test_batches.classes
 
-predictions = model.predict(x=test_batches, verbose=0)
+#converting the range of the pixel data from 0-255 to 0-1
+X_train = X_train / 255.0
 
-cm = confusion_matrix(y_true=test_batches.classes, y_pred=np.argmax(predictions, axis=-1))
+X_test = X_test / 255.0
 
-def plot_confusion_matrix(cm, classes,
-                        normalize=False,
-                        title='Confusion matrix',
-                        cmap=plt.cm.Blues):
-    """
-    This function prints and plots the confusion matrix.
-    Normalization can be applied by setting `normalize=True`.
-    """
-    plt.imshow(cm, interpolation='nearest', cmap=cmap)
-    plt.title(title)
-    plt.colorbar()
-    tick_marks = np.arange(len(classes))
-    plt.xticks(tick_marks, classes)
-    plt.yticks(tick_marks, classes)
 
-    if normalize:
-        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        print("Normalized confusion matrix")
-    else:
-        print('Confusion matrix, without normalization')
+X_train = X_train.values.reshape(-1,28,28,1)
+X_test = X_test.values.reshape(-1,28,28,1)
+print(X_train.shape)
+print(X_test.shape)
 
-    print(cm)
 
-    thresh = cm.max() / 2.
-    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-        plt.text(j, i, cm[i, j],
-            horizontalalignment="center",
-            color="white" if cm[i, j] > thresh else "black")
+fig = px.histogram(train, 
+                   x='label', 
+                   color = 'label',
+                   title="Distrubition of Labels in the Training Set",
+                   width=700, height=500)
+fig.show()
 
-    plt.tight_layout()
-    plt.ylabel('True label')
-    plt.xlabel('Predicted label')
+#creating an interactive bar graph that shows the distrubition of labels within the test set
+fig = px.histogram(test, 
+                   x='label',
+                   color = 'label',
+                   title="Distrubition of Labels in the Test Set",
+                   width=700, height=500)
+fig.show()
 
-category = list(test_batches.class_indices.keys())
+#creating a 5x5 grid of the first 25 photos in the training images
+fig, axes = plt.subplots(nrows=5, ncols=5, figsize=(15, 10),
+                        subplot_kw={'xticks': [], 'yticks': []})
 
-plot_confusion_matrix(cm, classes=category, title='Confusion matrix')
+for i in range(25):
+    plt.subplot(5,5,i+1)
+    plt.imshow(X_train[i], cmap='gray')
+    plt.title(Y_train[i])
 plt.show()
 
-model.save('final_model.h5')
 
-plt.savefig('final_confusion_matrix.png')
+#creating a 5x5 grid of the first 25 photos in the test images
+fig, axes = plt.subplots(nrows=5, ncols=5, figsize=(15, 10),
+                        subplot_kw={'xticks': [], 'yticks': []})
+
+for i in range(25):
+    plt.subplot(5,5,i+1)
+    plt.imshow(X_test[i], cmap='gray')
+    plt.title(Y_test[i])
+plt.show()
+
+#spliting training images into the images we will use for training the model and validating the model
+X_train, X_val, Y_train, Y_val = train_test_split(X_train, Y_train, test_size = 0.3, random_state=7)
+
+
+#showing the shapes of our train, validate, and test images
+print(X_train.shape)
+print(Y_train.shape)
+print(X_val.shape)
+print(Y_val.shape)
+print(X_test.shape)
+print(Y_test.shape)
+
+
+#creating our CNN model
+model = keras.Sequential([
+    
+    layers.BatchNormalization(),
+    layers.Conv2D(filters=32, kernel_size=(5,5), activation="relu", padding='same',
+                  input_shape=[28, 28, 1]),
+    layers.MaxPool2D(),
+    layers.Dropout(.25),
+    
+    layers.BatchNormalization(),
+    layers.Conv2D(filters=32, kernel_size=(3,3), activation="relu", padding='same'),
+    layers.MaxPool2D(),
+    layers.Dropout(.25),
+    
+    layers.BatchNormalization(),
+    layers.Conv2D(filters=64, kernel_size=(3,3), activation="relu", padding='same'),
+    layers.MaxPool2D(),
+    layers.Dropout(.25),
+
+    layers.BatchNormalization(),
+    layers.Conv2D(filters=128, kernel_size=(3,3), activation="relu", padding='same'),
+    layers.MaxPool2D(),
+    layers.Dropout(.25),
+    
+    layers.Flatten(),
+    layers.Dropout(.25),
+    layers.Dense(units=64, activation="relu"),
+    layers.Dense(units=26, activation="softmax"),
+])
+
+
+#compiling the model
+model.compile(
+    optimizer=tf.keras.optimizers.Adam(epsilon=0.01),
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+
+#Training the model
+history = model.fit(
+    x = X_train,
+    y = Y_train,
+    validation_data= (X_val,Y_val),
+    batch_size = 128,
+    epochs=50,
+    verbose=2,
+)
+#Viewing the training results
+history_frame = pd.DataFrame(history.history)
+history_frame.loc[:, ['loss', 'val_loss']].plot()
+history_frame.loc[:, ['accuracy', 'val_accuracy']].plot();
+
+
+#creating our predictions using the test pixel values
+predictions = model.predict(X_test)
+predictions = np.argmax(predictions,axis = 1)
+
+#creating a report that show how our predictions compare with actual values
+print(classification_report(Y_test, predictions))
+
+
+
