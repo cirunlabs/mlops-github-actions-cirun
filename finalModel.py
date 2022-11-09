@@ -27,10 +27,10 @@ tf.random.set_seed(20)
 
 
 #downloading the training data
-train = pd.read_csv("./sign-mnist-train/sign_mnist_train.csv")
+train = pd.read_csv("./sign_mnist_train/sign_mnist_train.csv")
 train.head()
 
-test = pd.read_csv("./sign-mnist-test/sign_mnist_test.csv")
+test = pd.read_csv("./sign_mnist_test/sign_mnist_test.csv")
 test.head()
 #summing the number of na in the training set for each column
 print(sum(train.isna().sum()))
