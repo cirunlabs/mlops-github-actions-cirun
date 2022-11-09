@@ -157,7 +157,7 @@ history = model.fit(
     y = Y_train,
     validation_data= (X_val,Y_val),
     batch_size = 128,
-    epochs=50,
+    epochs=150,
     verbose=2,
 )
 #Viewing the training results
