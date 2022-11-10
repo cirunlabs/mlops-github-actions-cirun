@@ -6,9 +6,9 @@ on:
 jobs:
   run:
     runs-on: [self-hosted, cirun.gpu]
-    container: docker://dvcorg/cml-py3:latest
     steps:
       - uses: actions/checkout@v3
+      - uses: iterative/setup-tools@v1
       - name: Get Free Memory
         run: free -h
       - name: Run NVIDIA-SMI
