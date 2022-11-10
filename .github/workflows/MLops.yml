@@ -12,9 +12,7 @@ jobs:
       - name: Get Free Memory
         run: free -h
       - name: Get GPU list
-        run: nvidia-smi --list-gpus
-      - name: Get GPU 
-        run: nvidia-smi --id=0 --loop=5 --query --display=UTILIZATION
+        run: nvidia-smi
       - name: Dependency Install
         run: pip install -r requirements.txt
       - name: MLops
