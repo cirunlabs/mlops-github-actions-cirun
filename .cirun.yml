@@ -3,7 +3,7 @@ runners:
     cloud: aws
     instance_type: g4dn.xlarge
     region: eu-west-1
-    machine_image: ami-0bddab4f878f34289
+    machine_image: ami-00ac0c28c01352e53
     workflow: .github/workflows/MLops.yml
     labels:
       - gpu
