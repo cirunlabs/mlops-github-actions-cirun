@@ -8,7 +8,8 @@ jobs:
     runs-on: [self-hosted, cirun.gpu]
     steps:
       - uses: actions/checkout@v3
-      - uses: iterative/setup-tools@v1
+      - uses: actions/setup-python@v4
+      - uses: iterative/setup-cml@v1
       - name: Get Free Memory
         run: free -h
       - name: Run NVIDIA-SMI
