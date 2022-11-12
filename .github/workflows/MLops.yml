@@ -4,25 +4,34 @@ on:
     branches: [ "new-example-2" ]
   workflow_dispatch: 
 jobs:
-  run:
-    runs-on: [self-hosted, cirun.gpu]
+  example_matrix:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, self-hosted]
+        containers: ["docker://dvcorg/cml-py3:latest" , "ghcr.io/iterative/cml:0-dvc2-base1-gpu" ]
+        container_arg: [" " , "--gpus all"]
+        exclude:
+          - os: ubuntu-latest
+            containers: "ghcr.io/iterative/cml:0-dvc2-base1-gpu"
+          - os: ubuntu-latest
+            container_arg: "--gpus all"
+          - os: self-hosted
+            containers: docker://dvcorg/cml-py3:latest
+          - os: self-hosted
+            container_arg: " "
+    runs-on: ${{ matrix.os }}
     container:
-      image: ghcr.io/iterative/cml:0-dvc2-base1-gpu
-      options: --gpus all
+      image: ${{ matrix.containers }}
+      options: ${{ matrix.container_arg }}
     steps:
       - uses: actions/checkout@v3
       - name: Get Free Memory
         run: free -h
-      - name: Run NVIDIA-SMI
-        run: |
-          echo Running nvidia-smi
-          nvidia-smi
       - name: Dependency Install
         run: pip install -r requirements.txt
       - name: MLops
         env:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          
           # Your ML workflow goes here
           python finalModel.py
