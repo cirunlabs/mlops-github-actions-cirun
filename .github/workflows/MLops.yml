@@ -1,15 +1,17 @@
-name: MLops
+name: GitHub Actions with your own GPUs
 on: 
   push:
-    branches: [ "new-example-2" ]
+    branches: [ "none" ] # When a push occurs on a branch workflow will trigger.
   workflow_dispatch: 
 jobs:
-  example_matrix:
+  CPU_GPU_matrix: # Creating matrix for jobs.
     strategy:
       matrix:
-        os: [ubuntu-latest, self-hosted]
+        # Creating a 2d matrix to execute our jobs with respective docker containers.
+        os: [ubuntu-latest, self-hosted] 
         containers: ["docker://dvcorg/cml-py3:latest" , "ghcr.io/iterative/cml:0-dvc2-base1-gpu" ]
         container_arg: [" " , "--gpus all"]
+        # Excluding the unwanted docker container and container_arg in our respective OS.
         exclude:
           - os: ubuntu-latest
             containers: "ghcr.io/iterative/cml:0-dvc2-base1-gpu"
@@ -19,10 +21,13 @@ jobs:
             containers: docker://dvcorg/cml-py3:latest
           - os: self-hosted
             container_arg: " "
-    runs-on: ${{ matrix.os }}
+    # Workflow to run commands in OS.
+    # Dynamic passing of os, containers, container_agr using matrix 
+    runs-on: ${{ matrix.os }} 
     container:
       image: ${{ matrix.containers }}
       options: ${{ matrix.container_arg }}
+    # Steps that we want to have with OS.
     steps:
       - uses: actions/checkout@v3
       - name: Get Free Memory
@@ -34,4 +39,4 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Your ML workflow goes here
-          python finalModel.py
+          python train.py
