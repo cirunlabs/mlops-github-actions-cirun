@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         # Creating a 2d matrix to execute our jobs with respective docker containers.
-        os: [ubuntu-latest, self-hosted] 
+        os: [ubuntu-latest, cirun.gpu] 
         containers: ["docker://dvcorg/cml-py3:latest" , "ghcr.io/iterative/cml:0-dvc2-base1-gpu" ]
         container_arg: [" " , "--gpus all"]
         # Excluding the unwanted docker container and container_arg in our respective OS.
