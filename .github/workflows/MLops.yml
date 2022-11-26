@@ -1,7 +1,7 @@
 name: GitHub Actions with your own GPUs
 on: 
   push:
-    branches: [ "none" ] # When a push occurs on a branch workflow will trigger.
+    branches: [ "none" ] #  When a push occurs on a branch workflow will trigger on your desired branch.
   workflow_dispatch: 
 jobs:
   CPU_GPU_matrix: # Creating matrix for jobs.
