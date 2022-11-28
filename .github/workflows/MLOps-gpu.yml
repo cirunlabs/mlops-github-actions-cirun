@@ -1,0 +1,28 @@
+name: MLops
+on: 
+  push:
+    branches: [ "none" ] # When a push occurs on a branch workflow will trigger on your desired branch.
+  workflow_dispatch: 
+jobs:
+  run:
+    runs-on: [self-hosted, cirun.gpu] # specifying the os 
+    container: # passing container to setup CML for MLOps
+      image: ghcr.io/iterative/cml:0-dvc2-base1-gpu
+      options: --gpus all # configuration of gpu on container
+    steps:
+      - uses: actions/checkout@v3 # checking out the repository
+      - name: Get Free Memory
+        run: free -h
+      - name: Run NVIDIA-SMI
+        run: |
+          echo Running nvidia-smi
+          nvidia-smi
+      - name: Dependency Install # installing all the dependencies 
+        run: pip install -r requirements.txt
+      - name: MLops
+        env: # passing github auth token
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          
+          # Your ML workflow goes here
+          python train.py
