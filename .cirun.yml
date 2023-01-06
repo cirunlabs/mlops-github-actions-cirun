@@ -1,15 +1,7 @@
-# Self-Hosted Github Action Runners on AWS via Cirun.io
 runners:
-  - name: gpu-runner
-    # Cloud Provider: AWS
-    cloud: aws
-    # VM on AWS
-    instance_type: g4dn.xlarge
-    # Ubuntu, ami image, region
-    region: eu-west-1
-    machine_image: ami-00ac0c28c01352e53
-    # Add this label in the "runs-on" param in .github/workflows/<workflow-name>.yml
-    # So that this runner is created for running the workflow
-    workflow: .github/workflows/MLops.yml
-    labels:
-      - cirun.gpu
+  - name: cirun-openstack-gpu
+    labels: cirun.gpu
+    cloud: openstack
+    instance_type: gpu_medium
+    machine_image: ubuntu-2204-nvidia-docker-20221229
+    region: RegionOne
