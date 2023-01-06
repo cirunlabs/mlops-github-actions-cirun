@@ -1,7 +1,8 @@
 runners:
   - name: cirun-openstack-gpu
-    labels: cirun.gpu
     cloud: openstack
     instance_type: gpu_medium
     machine_image: ubuntu-2204-nvidia-docker-20221229
     region: RegionOne
+    labels: 
+      - cirun.gpu
