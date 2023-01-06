@@ -1,7 +1,7 @@
 name: MLops
 on: 
   push:
-    branches: [ "none" ] # When a push occurs on a branch workflow will trigger on your desired branch.
+    branches: [ "*" ]
   workflow_dispatch: 
 jobs:
   run:
